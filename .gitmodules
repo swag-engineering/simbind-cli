@@ -1,0 +1,6 @@
+[submodule "matlab_exporter"]
+	path = simbind_cli/matlab_exporter
+	url = git@gitlab.com:swag-engineering/simweb/simbind-application/matlab_exporter.git
+[submodule "architect"]
+	path = simbind_cli/architect
+	url = git@gitlab.com:swag-engineering/simweb/simbind-application/simbind_architect.git
