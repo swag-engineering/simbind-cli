@@ -3,6 +3,7 @@ import os
 import argparse
 import logging
 import shutil
+import sys
 
 from .architect import Collector, MockDriver, SiLDriver, test_model_integrity
 from .matlab_exporter import export_model
@@ -11,7 +12,7 @@ from .matlab_exporter import export_model
 def dir_has_files(path: str) -> bool:
     if not os.path.isdir(path):
         raise RuntimeError(f"'{path}' is not a directory")
-    return not os.listdir(path)
+    return len(os.listdir(path)) != 0
 
 
 def delete_dir_internals(path: str):
@@ -27,22 +28,22 @@ def delete_dir_internals(path: str):
             print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 
-async def main(slx_path: str, exporter_out_path: str, models_out_path: str, time_step: float):
+async def main(slx_path: str, exporter_out_dir: str, models_out_dir: str, wheel_out_dir: str, time_step: float):
     await asyncio.to_thread(
         export_model,
         slx_path,
-        exporter_out_path,
+        exporter_out_dir,
         time_step
     )
-    collector = await Collector.create(exporter_out_path, time_step)
+    collector = await Collector.create(exporter_out_dir, time_step)
 
-    mock_dir = os.path.join(models_out_path, "mock")
+    mock_dir = os.path.join(models_out_dir, "mock")
     os.mkdir(mock_dir)
-    mock_pkg_name, mock_mdl_name, mock_cls_name = await MockDriver.compose(collector, mock_dir)
+    mock_pkg_name, mock_mdl_name, mock_cls_name = await MockDriver.compose(collector, mock_dir, "")
 
-    sil_dir = os.path.join(models_out_path, "sil")
+    sil_dir = os.path.join(models_out_dir, "sil")
     os.mkdir(sil_dir)
-    sil_pkg_name, sil_mdl_name, sil_cls_name = await SiLDriver.compose(collector, sil_dir)
+    sil_pkg_name, sil_mdl_name, sil_cls_name = await SiLDriver.compose(collector, sil_dir, "")
 
     await test_model_integrity(
         mock_dir,
@@ -69,31 +70,52 @@ async def main(slx_path: str, exporter_out_path: str, models_out_path: str, time
         True
     )
 
+    pip_proc = await asyncio.create_subprocess_shell(
+        f"{sys.executable} -m pip wheel --no-deps {sil_dir} -w {wheel_out_dir}",
+        stdout=asyncio.subprocess.DEVNULL,
+        stderr=asyncio.subprocess.PIPE
+    )
+    _, stderr = await pip_proc.communicate()
+    if pip_proc.returncode:
+        logging.error(stderr)
+        raise RuntimeError("stderr")
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--slx-path',
         dest='slx_path',
         help='path to simulink model',
-        required=True
+        required=True,
+        type=os.path.abspath
     )
     parser.add_argument(
-        '--exporter-out-path',
-        dest='exporter_out_path',
+        '--exporter-out-dir',
+        dest='exporter_out_dir',
         help='path to output folder',
-        required=True
+        required=True,
+        type=os.path.abspath
+    )
+    # parser.add_argument(
+    #     '--architect-out-dir',
+    #     dest='architect_out_path',
+    #     help='path to output folder',
+    #     required=True
+    # )
+    parser.add_argument(
+        '--models-out-dir',
+        dest='models_out_dir',
+        help='path to output folder',
+        required=True,
+        type=os.path.abspath
     )
     parser.add_argument(
-        '--architect-out-path',
-        dest='architect_out_path',
+        '--wheel-out-dir',
+        dest='wheel_out_dir',
         help='path to output folder',
-        required=True
-    )
-    parser.add_argument(
-        '--models-out-path',
-        dest='models_out_path',
-        help='path to output folder',
-        required=True
+        required=True,
+        type=os.path.abspath
     )
     parser.add_argument(
         '--overwrite',
@@ -107,11 +129,11 @@ if __name__ == '__main__':
     #     help='disables integrity tests of resulting packages',
     #     action='store_true'
     # )
-    parser.add_argument(
-        '--tmp_dir',
-        dest='tmp_dir',
-        help='Output to temporary folder. Should be used for debug only'
-    )
+    # parser.add_argument(
+    #     '--tmp_dir',
+    #     dest='tmp_dir',
+    #     help='Output to temporary folder. Should be used for debug only'
+    # )
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
         '-v',
@@ -147,10 +169,10 @@ if __name__ == '__main__':
     if not os.path.isfile(args.slx_path):
         raise RuntimeError(f"File {args.slx_path} does not exist.")
 
-    for dir_path in [args.exporter_out_path, args.architect_out_path, args.models_out_path]:
+    for dir_path in [args.exporter_out_dir, args.models_out_dir, args.wheel_out_dir]:
         if dir_has_files(dir_path):
             if not args.overwrite:
                 raise RuntimeError(f"Directory {dir_path} not empty. Consider using --overwrite.")
             delete_dir_internals(dir_path)
 
-    asyncio.run(main(args.slx_path, args.exporter_out_path, args.models_out_path, 0.004))
+    asyncio.run(main(args.slx_path, args.exporter_out_dir, args.models_out_dir, args.wheel_out_dir, 0.004))
