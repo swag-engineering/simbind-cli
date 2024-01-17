@@ -6,7 +6,7 @@ import shutil
 import sys
 
 from .architect import Collector, MockDriver, SiLDriver, test_model_integrity
-from .matlab_exporter import export_model
+from .matlab_exporter import export_model, FixedStepSolver
 
 
 def dir_has_files(path: str) -> bool:
@@ -28,12 +28,20 @@ def delete_dir_internals(path: str):
             print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 
-async def main(slx_path: str, exporter_out_dir: str, models_out_dir: str, wheel_out_dir: str, time_step: float):
+async def main(
+        slx_path: str,
+        exporter_out_dir: str,
+        models_out_dir: str,
+        wheel_out_dir: str,
+        solver: str,
+        time_step: float
+):
     await asyncio.to_thread(
         export_model,
         slx_path,
         exporter_out_dir,
-        time_step
+        time_step,
+        FixedStepSolver(solver)
     )
     collector = await Collector.create(exporter_out_dir, time_step)
 
@@ -134,6 +142,21 @@ if __name__ == '__main__':
     #     dest='tmp_dir',
     #     help='Output to temporary folder. Should be used for debug only'
     # )
+    parser.add_argument(
+        '--solver',
+        dest='solver',
+        choices=['ode1', 'ode2', 'ode3', 'ode4', 'ode5'],
+        help='matlab fixed step solver',
+        type=str,
+        default='ode5'
+    )
+    parser.add_argument(
+        '--step',
+        dest='step_size',
+        help='step_size',
+        type=float,
+        default=0.0004
+    )
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
         '-v',
@@ -175,4 +198,13 @@ if __name__ == '__main__':
                 raise RuntimeError(f"Directory {dir_path} not empty. Consider using --overwrite.")
             delete_dir_internals(dir_path)
 
-    asyncio.run(main(args.slx_path, args.exporter_out_dir, args.models_out_dir, args.wheel_out_dir, 0.004))
+    asyncio.run(
+        main(
+            args.slx_path,
+            args.exporter_out_dir,
+            args.models_out_dir,
+            args.wheel_out_dir,
+            args.solver,
+            args.step_size
+        )
+    )
