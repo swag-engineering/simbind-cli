@@ -2,6 +2,7 @@ import asyncio
 import os
 import argparse
 import logging
+import re
 import shutil
 import sys
 
@@ -30,6 +31,7 @@ def delete_dir_internals(path: str):
 
 async def main(
         slx_path: str,
+        package_name: str,
         exporter_out_dir: str,
         models_out_dir: str,
         wheel_out_dir: str,
@@ -43,20 +45,19 @@ async def main(
         time_step,
         FixedStepSolver(solver)
     )
-    collector = await Collector.create(exporter_out_dir, time_step)
+    collector = await Collector.create(exporter_out_dir, package_name, time_step)
 
     mock_dir = os.path.join(models_out_dir, "mock")
     os.mkdir(mock_dir)
-    mock_pkg_name, mock_mdl_name, mock_cls_name = await MockDriver.compose(collector, mock_dir, "")
+    mock_pkg_name, mock_cls_name = await MockDriver.compose(collector, mock_dir, "")
 
     sil_dir = os.path.join(models_out_dir, "sil")
     os.mkdir(sil_dir)
-    sil_pkg_name, sil_mdl_name, sil_cls_name = await SiLDriver.compose(collector, sil_dir, "")
+    sil_pkg_name, sil_cls_name = await SiLDriver.compose(collector, sil_dir, "")
 
     await test_model_integrity(
         mock_dir,
         mock_pkg_name,
-        mock_mdl_name,
         mock_cls_name,
         collector,
     )
@@ -64,7 +65,6 @@ async def main(
     await test_model_integrity(
         sil_dir,
         sil_pkg_name,
-        sil_mdl_name,
         sil_cls_name,
         collector
     )
@@ -72,7 +72,6 @@ async def main(
     await test_model_integrity(
         sil_dir,
         sil_pkg_name,
-        sil_mdl_name,
         sil_cls_name,
         collector,
         True
@@ -97,6 +96,13 @@ if __name__ == '__main__':
         help='path to simulink model',
         required=True,
         type=os.path.abspath
+    )
+    parser.add_argument(
+        '--pkg-name',
+        dest='pkg_name',
+        help='Name of the output Python package',
+        type=str,
+        default='model'
     )
     parser.add_argument(
         '--exporter-out-dir',
@@ -192,6 +198,9 @@ if __name__ == '__main__':
     if not os.path.isfile(args.slx_path):
         raise RuntimeError(f"File {args.slx_path} does not exist.")
 
+    if not re.match(r"^[a-z][a-z0-9_]+$", args.pkg_name):
+        raise RuntimeError(f"File {args.slx_path} does not exist.")
+
     for dir_path in [args.exporter_out_dir, args.models_out_dir, args.wheel_out_dir]:
         if dir_has_files(dir_path):
             if not args.overwrite:
@@ -201,6 +210,7 @@ if __name__ == '__main__':
     asyncio.run(
         main(
             args.slx_path,
+            args.pkg_name,
             args.exporter_out_dir,
             args.models_out_dir,
             args.wheel_out_dir,
