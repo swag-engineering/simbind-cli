@@ -1,4 +1,2 @@
-matlabengine
-jinja2
-pycparser
-pycparser_fake_libc
+-r simbind/architect/requirements.txt
+-r simbind/exporter/requirements.txt

@@ -12,3 +12,8 @@ python -m simbind \                                                             
 --wheel-out-dir=tmp/wheel \
 --overwrite
 ```
+
+dependencies
+```bash
+$ sudo apt-get install build-essential cmake swig
+```

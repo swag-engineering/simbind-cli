@@ -1,13 +1,14 @@
-import asyncio
 import os
-import argparse
-import logging
 import re
-import shutil
 import sys
+import shutil
+import logging
+import asyncio
+import argparse
+import tempfile
 
-from .architect import Collector, MockDriver, SiLDriver, test_model_integrity
-from .matlab_exporter import export_model, FixedStepSolver
+from simbind.architect.simbind_architect import Collector, MockDriver, SiLDriver, test_model_integrity
+from simbind.exporter.simulink_exporter import export_model, FixedStepSolver
 
 
 def dir_has_files(path: str) -> bool:
@@ -24,9 +25,15 @@ def delete_dir_internals(path: str):
                 os.unlink(file_path)
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
-                pass
         except Exception as e:
             print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+
+def prepare_dir(path: str, overwrite: bool):
+    if dir_has_files(path):
+        if not overwrite:
+            raise RuntimeError(f"Directory {path} not empty. Consider using --overwrite.")
+        delete_dir_internals(path)
 
 
 async def main(
@@ -36,7 +43,8 @@ async def main(
         models_out_dir: str,
         wheel_out_dir: str,
         solver: str,
-        time_step: float
+        time_step: float,
+        license_text: str
 ):
     await asyncio.to_thread(
         export_model,
@@ -49,11 +57,11 @@ async def main(
 
     mock_dir = os.path.join(models_out_dir, "mock")
     os.mkdir(mock_dir)
-    mock_pkg_name, mock_cls_name = await MockDriver.compose(collector, mock_dir, "")
+    mock_pkg_name, mock_cls_name = await MockDriver.compose(collector, mock_dir, license_text)
 
     sil_dir = os.path.join(models_out_dir, "sil")
     os.mkdir(sil_dir)
-    sil_pkg_name, sil_cls_name = await SiLDriver.compose(collector, sil_dir, "")
+    sil_pkg_name, sil_cls_name = await SiLDriver.compose(collector, sil_dir, license_text)
 
     await test_model_integrity(
         mock_dir,
@@ -89,11 +97,14 @@ async def main(
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        prog='Simbind CLI',
+        description='Tool to generate Python wheel package from Simulink model.'
+    )
     parser.add_argument(
         '--slx-path',
         dest='slx_path',
-        help='path to simulink model',
+        help='Path to Simulink .slx file',
         required=True,
         type=os.path.abspath
     )
@@ -105,77 +116,57 @@ if __name__ == '__main__':
         default='model'
     )
     parser.add_argument(
-        '--exporter-out-dir',
-        dest='exporter_out_dir',
-        help='path to output folder',
-        required=True,
-        type=os.path.abspath
-    )
-    # parser.add_argument(
-    #     '--architect-out-dir',
-    #     dest='architect_out_path',
-    #     help='path to output folder',
-    #     required=True
-    # )
-    parser.add_argument(
-        '--models-out-dir',
-        dest='models_out_dir',
-        help='path to output folder',
-        required=True,
-        type=os.path.abspath
-    )
-    parser.add_argument(
         '--wheel-out-dir',
         dest='wheel_out_dir',
-        help='path to output folder',
-        required=True,
+        help='Path to folder where wheel package will be stored',
+        default='./',
         type=os.path.abspath
     )
-    parser.add_argument(
-        '--overwrite',
-        dest='overwrite',
-        help='flag to overwrite output folder if it is not empty',
-        action='store_true'
-    )
-    # parser.add_argument(
-    #     '--no_tests',
-    #     dest='no_tests',
-    #     help='disables integrity tests of resulting packages',
-    #     action='store_true'
-    # )
-    # parser.add_argument(
-    #     '--tmp_dir',
-    #     dest='tmp_dir',
-    #     help='Output to temporary folder. Should be used for debug only'
-    # )
     parser.add_argument(
         '--solver',
         dest='solver',
         choices=['ode1', 'ode2', 'ode3', 'ode4', 'ode5'],
-        help='matlab fixed step solver',
+        help='Fixed-step solver',
         type=str,
         default='ode5'
     )
     parser.add_argument(
         '--step',
         dest='step_size',
-        help='step_size',
+        help='Fixed step size',
         type=float,
-        default=0.0004
+        default=0.001
     )
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument(
+    parser.add_argument(
+        '--license-text',
+        dest='license_text',
+        help='License text that will be included in output Python wheel package',
+        type=str,
+        default=""
+    )
+    parser.add_argument(
         '-v',
         dest='verbosity',
-        default=1,
+        default=0,
         help='Specifies the level of verbosity. Example: -vvv',
         action='count'
     )
-    group.add_argument(
-        '--quiet',
-        '-q',
-        dest='no_logs',
-        help='Do not print logs to stdout',
+    parser.add_argument(
+        '--exporter-out-dir',
+        dest='exporter_out_dir',
+        help='[DEBUG] Path to directory that will be used to store .c and .h files exported by Simulink.',
+        type=os.path.abspath
+    )
+    parser.add_argument(
+        '--models-out-dir',
+        dest='models_out_dir',
+        help='[DEBUG] Directory where output Python model will be stored.',
+        type=os.path.abspath
+    )
+    parser.add_argument(
+        '--overwrite',
+        dest='overwrite',
+        help='[DEBUG] Flag to delete models-out-dir and exporter-out-dir folders\' content if they are not empty',
         action='store_true'
     )
 
@@ -195,26 +186,43 @@ if __name__ == '__main__':
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
 
+    exporter_out_tmp_dir: tempfile.TemporaryDirectory | None = None
+    models_out_tmp_dir: tempfile.TemporaryDirectory | None = None
+
     if not os.path.isfile(args.slx_path):
-        raise RuntimeError(f"File {args.slx_path} does not exist.")
+        raise RuntimeError(f"File '{args.slx_path}' does not exist.")
+
+    if not os.path.isdir(args.wheel_out_dir):
+        raise RuntimeError(f"Directory '{args.wheel_out_dir}' does not exist.")
 
     if not re.match(r"^[a-z][a-z0-9_]+$", args.pkg_name):
-        raise RuntimeError(f"File {args.slx_path} does not exist.")
+        raise RuntimeError(f"Invalid package name '{args.pkg_name}'.")
 
-    for dir_path in [args.exporter_out_dir, args.models_out_dir, args.wheel_out_dir]:
-        if dir_has_files(dir_path):
-            if not args.overwrite:
-                raise RuntimeError(f"Directory {dir_path} not empty. Consider using --overwrite.")
-            delete_dir_internals(dir_path)
+    try:
+        if args.exporter_out_dir:
+            prepare_dir(args.exporter_out_dir, args.overwrite)
+        else:
+            exporter_out_tmp_dir = tempfile.TemporaryDirectory()
 
-    asyncio.run(
-        main(
-            args.slx_path,
-            args.pkg_name,
-            args.exporter_out_dir,
-            args.models_out_dir,
-            args.wheel_out_dir,
-            args.solver,
-            args.step_size
+        if args.models_out_dir:
+            prepare_dir(args.models_out_dir, args.overwrite)
+        else:
+            models_out_tmp_dir = tempfile.TemporaryDirectory()
+
+        asyncio.run(
+            main(
+                args.slx_path,
+                args.pkg_name,
+                args.exporter_out_dir or exporter_out_tmp_dir.name,
+                args.models_out_dir or models_out_tmp_dir.name,
+                args.wheel_out_dir,
+                args.solver,
+                args.step_size,
+                args.license_text
+            )
         )
-    )
+    finally:
+        if exporter_out_tmp_dir:
+            exporter_out_tmp_dir.cleanup()
+        if models_out_tmp_dir:
+            models_out_tmp_dir.cleanup()

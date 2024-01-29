@@ -3,5 +3,3 @@ __pycache__/
 /tmp/
 .idea/
 .pytest_cache/
-
-/deployment
