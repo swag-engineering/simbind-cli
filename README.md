@@ -24,7 +24,7 @@ be addressed in future updates, others are inherent to the external tools we int
 - If your model is part of a larger simulation, ensure that the _.slx_ file is self-sufficient. In Matlab/Simulink
   terms,
   this means that the model should be an 'atomic subsystem', functioning independently without relying on external
-  components. You can refer to this article.
+  components. You can refer to <a href="https://www.mathworks.com/help/simulink/ug/creating-subsystems.html">this article</a>.
 
 - Simulink model must have data type consistency, ensuring that there's no mismatch between the ports and signals.
 
@@ -49,48 +49,58 @@ Climate Control Systems Example' from Matlab library. You can open it with
 openExample('simulink_automotive/VehicleElectricalAndClimateControlSystemsExample')
 ```
 
-![Electrical Vehicle And Climate Control Systems Example](doc/VehicleElectricalAndClimateControlSystemsExample.png)
-*<p align="center">Electrical Vehicle And Climate Control Systems Example. Copyright 2017-2023 The MathWorks, Inc. All
-rights reserved.</p>*
+
+<div style="text-align: center;">
+<img src="doc/VehicleElectricalAndClimateControlSystemsExample.png" alt="Electrical Vehicle And Climate Control Systems Example" style="max-width: 100%; height: auto;">
+    <br>
+    <em>Electrical Vehicle And Climate Control Systems Example. Copyright 2017-2023 The MathWorks, Inc. All rights reserved.</em>
+</div>
 
 Open 'ClimateControlSystem' block:
 
-![Climate Control System Example](doc/ClimateControlSystem.png)
-*<p align="center">Climate Control System Example. Copyright 2017-2023 The MathWorks, Inc. All
-rights reserved.</p>*
+<div style="text-align: center;">
+<img src="doc/ClimateControlSystem.png" alt="Climate Control System Example" style="max-width: 100%; height: auto;">
+    <br>
+    <em>Climate Control System Example. Copyright 2017-2023 The MathWorks, Inc. All rights reserved.</em>
+</div>
 
-For the convenience I have copy-pasted this model to _New_ space. In the first step we need to define _In_ and _Out_
-ports
-of our model, for these lets:
+In the first step we need to define _In_ and _Out_ ports of our model, for these lets:
 
 - Substitute all _Scope_ and _Display_ components with _Out_ ports.
 - Turn some _Constants_ into _In_ ports.
 
 Here is how model looks like after the changes are applied:
 
-![Climate Control System Example with defined In and Out ports](doc/ClimateControlSystemUpdate1.png)
-*<p align="center">Climate Control System Example with defined In and Out ports. Copyright 2017-2023 The MathWorks, Inc.
-All rights reserved.</p>*
+<div style="text-align: center;">
+<img src="doc/ClimateControlSystemUpdate1.png" alt="Climate Control System Example with defined In and Out ports" style="max-width: 100%; height: auto;">
+    <br>
+    <em>Climate Control System Example with defined In and Out ports. Copyright 2017-2023 The MathWorks, Inc. All rights reserved.</em>
+</div>
 
 Next let's make a subsystem from resulting model, select everything, right-click and choose 'Create Subsystem from
 Selection':
 
-![Climate Control System Example Subsystem](doc/ClimateControlSystemUpdate2.png)
-*<p align="center">Climate Control System Example Subsystem. Copyright 2017-2023 The MathWorks, Inc. All rights
-reserved.</p>*
+<div style="text-align: center;">
+<img src="doc/ClimateControlSystemUpdate2.png" alt="Climate Control System Example Subsystem" style="max-width: 100%; height: auto;">
+    <br>
+    <em>Climate Control System Example Subsystem. Copyright 2017-2023 The MathWorks, Inc. All rights reserved.</em>
+</div>
 
 Now we need to make model atomic to make sure that all relevant functionality is encapsulated within model itself and
 does not depend on external components. Right-click on your subsystem and select 'Block Parameters (Subsystem)' and
 select 'Treat as atomic unit':
 
-![Subsystem Block parameters](doc/SubsystemBlockParameters.png)
-*<p align="center">Subsystem Block parameters. Copyright 2017-2023 The MathWorks, Inc. All rights reserved.</p>*
+<div style="text-align: center;">
+<img src="doc/SubsystemBlockParameters.png" alt="Subsystem Block parameters" style="width: auto; max-height: 100%;">
+    <br>
+    <em>Subsystem Block parameters. Copyright 2017-2023 The MathWorks, Inc. All rights reserved.</em>
+</div>
 
 Save your model and let's try to build model with:
 
 ```bash
 $ python -m simbind \
-  --slx-path=/path/to/ClimateControl.slx \
+  --slx-path=/path/to/Controller.slx \
   --pkg-name=climate_control \
   --solver=ode5 \
   --step=0.001
@@ -114,8 +124,11 @@ There is certain chance that you will encounter some issue. Let's iterate over m
   you might want to have dedicated clock signal to synchronise all components. To keep example simple I have just
   changed _Pulse type_ from _Time based_ to _Sample based_ and adjusted other parameters accordingly:
 
-  ![System Trigger Block parameters](doc/SystemTriggerBlockParameters.png)
-  *<p align="center">System Trigger Block parameters. Copyright 2017-2023 The MathWorks, Inc. All rights reserved.</p>*
+  <div style="text-align: center;">
+  <img src="doc/SystemTriggerBlockParameters.png" alt="System Trigger Block parameters" style="width: auto; max-height: 100%;">
+      <br>
+      <em>System Trigger Block parameters. Copyright 2017-2023 The MathWorks, Inc. All rights reserved.</em>
+  </div>
 
 - If at any of above-mentioned steps you have transformed your model
   into <a href="https://www.mathworks.com/help/rtw/referenced-models-1.html">Referenced Model</a> to avoid deleting
@@ -297,8 +310,11 @@ Software-in-the-Loop tests development, as well as results analysis. To highligh
 - Cloud-based tests execution with data and logs visualization.
 - Model test mocks to facilitate local test development.
 
-![Simweb and Grafana integration](doc/SimwebGrafanaIntegration.png)
-*<p align="center">Simweb and Grafana integration.</p>*
+<div style="text-align: center;">
+<img src="doc/SimwebGrafanaIntegration.png" alt="Simweb and Grafana integration" style="max-width: 100%; height: auto;">
+    <br>
+    <em>Simweb and Grafana integration.</em>
+</div>
 
 If you believe this this aligns with your needs, we would love to hear from you! Reach out, and we would be delighted to
 arrange a demo for you! Moreover, we are starting the work on Hardware-in-the-Loop integration and looking for
