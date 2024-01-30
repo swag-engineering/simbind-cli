@@ -49,20 +49,17 @@ Climate Control Systems Example' from Matlab library. You can open it with
 openExample('simulink_automotive/VehicleElectricalAndClimateControlSystemsExample')
 ```
 
-
-<div style="text-align: center;">
-<img src="doc/VehicleElectricalAndClimateControlSystemsExample.png" alt="Electrical Vehicle And Climate Control Systems Example" style="max-width: 100%; height: auto;">
-    <br>
-    <em>Electrical Vehicle And Climate Control Systems Example. Copyright 2017-2023 The MathWorks, Inc. All rights reserved.</em>
-</div>
+*<p align="center">
+![Electrical Vehicle And Climate Control Systems Example](doc/VehicleElectricalAndClimateControlSystemsExample.png)
+Electrical Vehicle And Climate Control Systems Example. Copyright 2017-2023 The MathWorks, Inc. All
+rights reserved.</p>*
 
 Open 'ClimateControlSystem' block:
 
-<div style="text-align: center;">
-<img src="doc/ClimateControlSystem.png" alt="Climate Control System Example" style="max-width: 100%; height: auto;">
-    <br>
-    <em>Climate Control System Example. Copyright 2017-2023 The MathWorks, Inc. All rights reserved.</em>
-</div>
+*<p align="center">
+![Climate Control System Example](doc/ClimateControlSystem.png)
+Climate Control System Example. Copyright 2017-2023 The MathWorks, Inc. All
+rights reserved.</p>*
 
 In the first step we need to define _In_ and _Out_ ports of our model, for these lets:
 
@@ -71,30 +68,26 @@ In the first step we need to define _In_ and _Out_ ports of our model, for these
 
 Here is how model looks like after the changes are applied:
 
-<div style="text-align: center;">
-<img src="doc/ClimateControlSystemUpdate1.png" alt="Climate Control System Example with defined In and Out ports" style="max-width: 100%; height: auto;">
-    <br>
-    <em>Climate Control System Example with defined In and Out ports. Copyright 2017-2023 The MathWorks, Inc. All rights reserved.</em>
-</div>
+*<p align="center">
+![Climate Control System Example with defined In and Out ports](doc/ClimateControlSystemUpdate1.png)
+Climate Control System Example with defined In and Out ports. Copyright 2017-2023 The MathWorks, Inc.
+All rights reserved.</p>*
 
 Next let's make a subsystem from resulting model, select everything, right-click and choose 'Create Subsystem from
 Selection':
 
-<div style="text-align: center;">
-<img src="doc/ClimateControlSystemUpdate2.png" alt="Climate Control System Example Subsystem" style="max-width: 100%; height: auto;">
-    <br>
-    <em>Climate Control System Example Subsystem. Copyright 2017-2023 The MathWorks, Inc. All rights reserved.</em>
-</div>
+*<p align="center">
+![Climate Control System Example Subsystem](doc/ClimateControlSystemUpdate2.png)
+Climate Control System Example Subsystem. Copyright 2017-2023 The MathWorks, Inc. All rights
+reserved.</p>*
 
 Now we need to make model atomic to make sure that all relevant functionality is encapsulated within model itself and
 does not depend on external components. Right-click on your subsystem and select 'Block Parameters (Subsystem)' and
 select 'Treat as atomic unit':
 
-<div style="text-align: center;">
-<img src="doc/SubsystemBlockParameters.png" alt="Subsystem Block parameters" style="width: auto; max-height: 100%;">
-    <br>
-    <em>Subsystem Block parameters. Copyright 2017-2023 The MathWorks, Inc. All rights reserved.</em>
-</div>
+*<p align="center">
+![Subsystem Block parameters](doc/SubsystemBlockParameters.png)
+Subsystem Block parameters. Copyright 2017-2023 The MathWorks, Inc. All rights reserved.</p>*
 
 Save your model and let's try to build model with:
 
@@ -124,11 +117,10 @@ There is certain chance that you will encounter some issue. Let's iterate over m
   you might want to have dedicated clock signal to synchronise all components. To keep example simple I have just
   changed _Pulse type_ from _Time based_ to _Sample based_ and adjusted other parameters accordingly:
 
-  <div style="text-align: center;">
-  <img src="doc/SystemTriggerBlockParameters.png" alt="System Trigger Block parameters" style="width: auto; max-height: 100%;">
-      <br>
-      <em>System Trigger Block parameters. Copyright 2017-2023 The MathWorks, Inc. All rights reserved.</em>
-  </div>
+  <p align="center">
+    <img src="doc/SystemTriggerBlockParameters.png" alt="System Trigger Block parameters"/>
+  </p>
+  <p align="center"><em>System Trigger Block parameters. Copyright 2017-2023 The MathWorks, Inc. All rights reserved.</em></p>*
 
 - If at any of above-mentioned steps you have transformed your model
   into <a href="https://www.mathworks.com/help/rtw/referenced-models-1.html">Referenced Model</a> to avoid deleting
@@ -310,11 +302,9 @@ Software-in-the-Loop tests development, as well as results analysis. To highligh
 - Cloud-based tests execution with data and logs visualization.
 - Model test mocks to facilitate local test development.
 
-<div style="text-align: center;">
-<img src="doc/SimwebGrafanaIntegration.png" alt="Simweb and Grafana integration" style="max-width: 100%; height: auto;">
-    <br>
-    <em>Simweb and Grafana integration.</em>
-</div>
+*<p align="center">
+![Simweb and Grafana integration](doc/SimwebGrafanaIntegration.png)
+Simweb and Grafana integration.</p>*
 
 If you believe this this aligns with your needs, we would love to hear from you! Reach out, and we would be delighted to
 arrange a demo for you! Moreover, we are starting the work on Hardware-in-the-Loop integration and looking for
