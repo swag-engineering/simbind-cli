@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "simbind"
+version = "0.1.0"
+description = "Generate Python wheel package from Simulink model!"
+authors = ["SWAG Engineering UG <contact@swag-engineering.io>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
