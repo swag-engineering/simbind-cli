@@ -1,13 +1,32 @@
-[tool.poetry]
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
 name = "simbind"
 version = "0.1.0"
 description = "Generate Python wheel package from Simulink model!"
-authors = ["SWAG Engineering UG <contact@swag-engineering.io>"]
+authors = [{name = "SWAG Engineering UG", email = "contact@swag-engineering.io"}]
 readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.8"
+dynamic = ["dependencies"]
 
-[tool.poetry.dependencies]
-python = "^3.8"
+[tool.setuptools.dynamic]
+dependencies = { file = ["simbind/architect/requirements.txt", "simbind/exporter/requirements.txt"] }
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[project.scripts]
+simbind = "simbind.__main__:main"
+
+[tool.setuptools.packages.find]
+include = [
+    "simbind",
+    "simbind.architect.*",
+    "simbind.exporter.*"
+]
+
+[tool.setuptools.package-data]
+"*" = ["*.j2", "*.m"]
+
+[tool.distutils.bdist_wheel]
+plat-name = "linux_x86_64"

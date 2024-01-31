@@ -1,5 +1,3 @@
-__pycache__/
-/venv/
 /tmp/
-.idea/
-.pytest_cache/
+/dist/
+/build/
