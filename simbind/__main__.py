@@ -20,13 +20,10 @@ def dir_has_files(path: str) -> bool:
 def delete_dir_internals(path: str):
     for filename in os.listdir(path):
         file_path = os.path.join(path, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
-        except Exception as e:
-            print('Failed to delete %s. Reason: %s' % (file_path, e))
+        if os.path.isfile(file_path) or os.path.islink(file_path):
+            os.unlink(file_path)
+        elif os.path.isdir(file_path):
+            shutil.rmtree(file_path)
 
 
 def prepare_dir(path: str, overwrite: bool):
@@ -93,7 +90,7 @@ async def assemble(
     _, stderr = await pip_proc.communicate()
     if pip_proc.returncode:
         logging.error(stderr)
-        raise RuntimeError("stderr")
+        raise RuntimeError(stderr)
 
 
 async def async_main():
@@ -193,13 +190,17 @@ async def async_main():
     models_out_tmp_dir: tempfile.TemporaryDirectory | None = None
 
     if not os.path.isfile(args.slx_path):
-        raise RuntimeError(f"File '{args.slx_path}' does not exist.")
+        raise FileNotFoundError(f"File '{args.slx_path}' does not exist.")
 
     if not os.path.isdir(args.wheel_out_dir):
-        raise RuntimeError(f"Directory '{args.wheel_out_dir}' does not exist.")
+        raise FileNotFoundError(f"Directory '{args.wheel_out_dir}' does not exist.")
 
-    if not re.match(r"^[a-z][a-z0-9_]+$", args.pkg_name):
-        raise RuntimeError(f"Invalid package name '{args.pkg_name}'.")
+    if not re.match(r"^[a-z][a-z0-9_]{4,49}$", args.pkg_name):
+        raise ValueError(
+            f"Invalid package name '{args.pkg_name}'."
+            "Only lowercase letters, numbers and underscores are acceptable. Should start with lowercase letter and "
+            "have length between 5 and 50 characters."
+        )
 
     try:
         if args.exporter_out_dir:
