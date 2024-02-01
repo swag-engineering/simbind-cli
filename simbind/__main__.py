@@ -29,7 +29,7 @@ def delete_dir_internals(path: str):
 def prepare_dir(path: str, overwrite: bool):
     if dir_has_files(path):
         if not overwrite:
-            raise RuntimeError(f"Directory {path} not empty. Consider using --overwrite.")
+            raise ValueError(f"Directory {path} not empty. Consider using --overwrite.")
         delete_dir_internals(path)
 
 
@@ -130,7 +130,7 @@ async def async_main():
     parser.add_argument(
         '--step',
         dest='step_size',
-        help='Fixed step size. (default: \'%(default)s\')',
+        help='Fixed step size in seconds. (default: \'%(default)s\')',
         type=float,
         default=0.001
     )

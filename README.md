@@ -35,9 +35,9 @@ be addressed in future updates, others are inherent to the external tools we int
 
 - You need Linux x86-64 machine with installed Matlab.
 - From Matlab side you need Simulink suite with Simulink Coder.
-- You also need gcc, cmake, make and swig. Under Debian-based distros you can install it with
+- You also need pip, gcc, cmake, make and swig. Under Debian-based distros you can install it with
   ```bash
-  sudo apt-get install build-essential cmake swig
+  sudo apt-get install python3-pip build-essential cmake swig
   ```
 
 ## Prepare the Model

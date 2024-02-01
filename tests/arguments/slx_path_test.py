@@ -19,8 +19,7 @@ async def test_mandatory_slx_path(capfd):
 
 
 @pytest.mark.asyncio
-async def test_slx_path_doesnt_exist(mocker):
-    mocker.patch('simbind.__main__.assemble')
+async def test_slx_path_doesnt_exist(assemble_func_mock):
     sys.argv = [
         "prog",
         "--slx-path=/doesnt/exist"
@@ -30,14 +29,13 @@ async def test_slx_path_doesnt_exist(mocker):
 
 
 @pytest.mark.asyncio
-async def test_slx_path_transmission(mocker, random_file):
-    mock_assemble = mocker.patch('simbind.__main__.assemble')
+async def test_slx_path_transmission(assemble_func_mock, random_file):
     sys.argv = [
         "prog",
         f"--slx-path={random_file}"
     ]
     await async_main()
-    mock_assemble.assert_called_once_with(
+    assemble_func_mock.assert_called_once_with(
         random_file,
         *[pytest.any] * 7
     )

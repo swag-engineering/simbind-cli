@@ -14,6 +14,12 @@ def pytest_configure():
 
     pytest.any = Any()
 
+
+@pytest.fixture(scope="function")
+def assemble_func_mock(mocker):
+    return mocker.patch('simbind.__main__.assemble')
+
+
 @pytest.fixture(scope="function")
 def random_file() -> str:
     with tempfile.NamedTemporaryFile() as temp_file:

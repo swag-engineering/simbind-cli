@@ -6,8 +6,7 @@ from simbind.__main__ import async_main
 
 
 @pytest.mark.asyncio
-async def test_invalid_package_names(mocker, random_file):
-    mocker.patch('simbind.__main__.assemble')
+async def test_invalid_package_names(assemble_func_mock, random_file):
     package_names = [
         "a" * 4,
         "a" * 51,
@@ -30,7 +29,6 @@ async def test_invalid_package_names(mocker, random_file):
 
 @pytest.mark.asyncio
 async def test_valid_package_names(mocker, random_file):
-    mocker.patch('simbind.__main__.assemble')
     package_names = [
         "a" * 5,
         "a" * 50,
@@ -42,4 +40,10 @@ async def test_valid_package_names(mocker, random_file):
             f"--slx-path={random_file}",
             f"--pkg-name={name}"
         ]
+        mock_assemble = mocker.patch('simbind.__main__.assemble')
         await async_main()
+        mock_assemble.assert_called_once_with(
+            random_file,
+            name,
+            *[pytest.any] * 6
+        )
