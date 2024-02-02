@@ -29,4 +29,4 @@ include = [
 "*" = ["*.j2", "*.m"]
 
 [tool.distutils.bdist_wheel]
-plat-name = "linux_x86_64"
+plat-name = "manylinux2010_x86_64"
