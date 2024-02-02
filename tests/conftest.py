@@ -47,4 +47,3 @@ def secure_argv():
     original_argv = sys.argv
     yield
     sys.argv = original_argv
-
