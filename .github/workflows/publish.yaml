@@ -18,17 +18,6 @@ jobs:
         submodules: true
         token: ${{ secrets.PUSH_TOKEN }}
         fetch-depth: 0
-    - name: Increment patch version
-      run: |
-        echo $(awk -F. '{$NF = $NF + 1;} 1' OFS=. VERSION) > VERSION
-    - name: Commit and push
-      run: |
-        git config user.name "github-actions"
-        git config user.email "github-actions@github.com"
-        git add VERSION
-        NEW_VERSION=$(cat VERSION)
-        git commit -m "Increment version to $NEW_VERSION"
-        git push
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
