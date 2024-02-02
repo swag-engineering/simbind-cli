@@ -1,9 +1,6 @@
 name: Pytest
 
 on:
-  push:
-    paths-ignore:
-      - 'VERSION'
   pull_request:
   workflow_dispatch:
 
