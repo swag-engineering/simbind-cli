@@ -13,6 +13,18 @@ limitations.
   sudo apt-get install python3-pip build-essential cmake swig
   ```
 
+## Installation
+
+To install from PyPi run
+```bash
+$ pip install simbind 
+```
+
+To clone project you will also need to pull submodules with:
+```bash
+$ git clone --recurse-submodules https://github.com/swag-engineering/simbind-cli.git
+```
+
 ## Usage
 
 Simbind CLI is a wrapper around [Simulink Exporter](https://github.com/swag-engineering/simulink-exporter)
