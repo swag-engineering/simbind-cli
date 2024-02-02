@@ -4,16 +4,16 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "simbind"
-version = "0.1.0"
 description = "Generate Python wheel package from Simulink model!"
 authors = [{name = "SWAG Engineering UG", email = "contact@swag-engineering.io"}]
 readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.8"
-dynamic = ["dependencies"]
+dynamic = ["dependencies", "version"]
 
 [tool.setuptools.dynamic]
 dependencies = { file = ["simbind/architect/requirements.txt", "simbind/exporter/requirements.txt"] }
+version = { file = ["VERSION"] }
 
 [project.scripts]
 simbind = "simbind.__main__:main"
