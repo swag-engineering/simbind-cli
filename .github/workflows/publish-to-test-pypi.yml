@@ -39,7 +39,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
         submodules: true
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.PUSH_TOKEN }}
         fetch-depth: 0
     - name: Increment patch version
       run: |
