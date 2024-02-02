@@ -49,6 +49,7 @@ jobs:
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
         git add VERSION
+        NEW_VERSION=$(cat VERSION)
         git commit -m "Increment version to $NEW_VERSION"
         git push
     - name: Set up Python
