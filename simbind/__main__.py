@@ -122,7 +122,7 @@ async def async_main():
     parser.add_argument(
         '--solver',
         dest='solver',
-        choices=['ode1', 'ode2', 'ode3', 'ode4', 'ode5'],
+        choices=['ode1', 'ode2', 'ode3', 'ode4', 'ode5', 'ode8', 'ode14x', 'ode1be'],
         help='Fixed-step solver. (default: \'%(default)s\')',
         type=str,
         default='ode5'
@@ -195,7 +195,7 @@ async def async_main():
     if not os.path.isdir(args.wheel_out_dir):
         raise FileNotFoundError(f"Directory '{args.wheel_out_dir}' does not exist.")
 
-    if not re.match(r"^[a-z][a-z0-9_]{4,49}$", args.pkg_name):
+    if not re.match(r"^[a-z][a-z0-9_]{4,29}$", args.pkg_name):
         raise ValueError(
             f"Invalid package name '{args.pkg_name}'."
             "Only lowercase letters, numbers and underscores are acceptable. Should start with lowercase letter and "
