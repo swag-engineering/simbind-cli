@@ -23,7 +23,7 @@ async def test_invalid_solver(capfd, assemble_func_mock, random_file):
 
 @pytest.mark.asyncio
 async def test_exporter_dir_without_overwrite(mocker, random_file):
-    possible_solvers = ['ode1', 'ode2', 'ode3', 'ode4', 'ode5']
+    possible_solvers = ['ode1', 'ode2', 'ode3', 'ode4', 'ode5', 'ode8', 'ode14x', 'ode1be']
     for solver in possible_solvers:
         assemble_mock = mocker.patch('simbind.__main__.assemble')
         sys.argv = [

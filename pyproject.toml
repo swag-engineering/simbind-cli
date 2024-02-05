@@ -9,7 +9,23 @@ authors = [{name = "SWAG Engineering UG", email = "contact@swag-engineering.io"}
 readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.10, <3.12"
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
 dynamic = ["dependencies", "version"]
+
+[project.urls]
+Documentation = "https://github.com/swag-engineering/simbind-cli/wiki/Motivation"
+Repository = "https://github.com/swag-engineering/simbind-cli.git"
 
 [tool.setuptools.dynamic]
 dependencies = { file = ["simbind/architect/requirements.txt", "simbind/exporter/requirements.txt"] }
