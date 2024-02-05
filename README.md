@@ -5,7 +5,7 @@ to [Wiki](https://github.com/swag-engineering/simbind-cli/wiki/Motivation)
 and [Examples](https://github.com/swag-engineering/simbind-cli/tree/master/examples) to explore the project's
 capabilities and limitations.
 
-![Single Loop Feedback](examples/SingleLoopFeedback/SingleLoopFeedback.png)
+![Single Loop Feedback](https://raw.githubusercontent.com/swag-engineering/simbind-cli/master/examples/SingleLoopFeedback/SingleLoopFeedback.png)
 
 ## Requirements
 
