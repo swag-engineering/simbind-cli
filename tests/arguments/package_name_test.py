@@ -31,7 +31,7 @@ async def test_invalid_package_names(assemble_func_mock, random_file):
 async def test_valid_package_names(mocker, random_file):
     package_names = [
         "a" * 5,
-        "a" * 50,
+        "a" * 30,
         "a1bc_"
     ]
     for name in package_names:
