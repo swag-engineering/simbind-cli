@@ -3,11 +3,8 @@ name: Build Docker image
 on:
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
