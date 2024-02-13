@@ -92,6 +92,16 @@ async def assemble(
         logging.error(stderr)
         raise RuntimeError(stderr)
 
+    pip_proc = await asyncio.create_subprocess_shell(
+        f"{sys.executable} -m pip wheel --no-deps {mock_dir} -w {wheel_out_dir}",
+        stdout=asyncio.subprocess.DEVNULL,
+        stderr=asyncio.subprocess.PIPE
+    )
+    _, stderr = await pip_proc.communicate()
+    if pip_proc.returncode:
+        logging.error(stderr)
+        raise RuntimeError(stderr)
+
 
 async def async_main():
     parser = argparse.ArgumentParser(
