@@ -72,6 +72,9 @@ options:
 For detailed instructions on the structure of the output Python package, please refer to
 our [Wiki](https://github.com/swag-engineering/simbind-cli/wiki/Python-Package-Structure).
 
+### Docker
+
+
 ## Issues
 
 If you run into any issues or believe additional functionality is needed, please don't hesitate to open an issue or
