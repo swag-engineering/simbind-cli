@@ -1,7 +1,7 @@
 # Simbind CLI
 
-Generate Python Wheel package from Simulink model! Please refer
-to [Wiki](https://github.com/swag-engineering/simbind-cli/wiki/Motivation)
+Generate Python Wheel package from Simulink model to enhance your Software-in-Loop (SiL) tests development workflow!
+Please refer to [Wiki](https://github.com/swag-engineering/simbind-cli/wiki/Motivation)
 and [Examples](https://github.com/swag-engineering/simbind-cli/tree/master/examples) to explore the project's
 capabilities and limitations.
 
@@ -9,13 +9,15 @@ capabilities and limitations.
 
 ## Requirements
 
-To use the tool you need:
+We highly recommend to use [Dockerized](https://github.com/swag-engineering/simbind-cli-docker) version of Simbind,
+since collecting the correct versions of the necessary requirements can be challenging. If you opt for local
+installation, the following is required:
 
-- Linux x86-64 machine with installed Matlab R2023b or older.
+- Linux x86-64 machine with installed Matlab R2023b.
 - Python 3.10 or 3.11: [Simbind Architect](https://github.com/swag-engineering/simbind-architect#Requirements) requires
   Python 3.10+ and [Simulink Exporter](https://github.com/swag-engineering/simulink-exporter#Requirements) needs Python
-  3.9, 3.10 or 3.11
-- From Matlab side you need Simulink suite with Simulink Coder.
+  3.9, 3.10 or 3.11.
+- From Matlab side you need Simulink suite with Embedded Coder.
 - You also need pip, gcc, cmake, make and swig. Under Debian-based distros you can install it with
   ```bash
   sudo apt-get install python3-pip build-essential cmake swig
@@ -66,6 +68,9 @@ options:
                         License text that will be included in output Python wheel package. (default: '')
   -v                    Specifies the level of verbosity. Example: -vvv
 ```
+
+For detailed instructions on the structure of the output Python package, please refer to
+our [Wiki](https://github.com/swag-engineering/simbind-cli/wiki/Python-Package-Structure).
 
 ## Issues
 
