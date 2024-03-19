@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<root>
+
+  <ActivationEntry hostname="*" matlabroot="*" user="*">
+    <licmode>onlinelicensing</licmode>
+  </ActivationEntry>
+
+</root>
