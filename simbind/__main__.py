@@ -68,6 +68,14 @@ async def assemble(
     )
 
     await test_model_integrity(
+        mock_dir,
+        mock_pkg_name,
+        mock_cls_name,
+        collector,
+        True
+    )
+
+    await test_model_integrity(
         sil_dir,
         sil_pkg_name,
         sil_cls_name,

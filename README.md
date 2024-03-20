@@ -1,17 +1,19 @@
 # Simbind CLI
 
-Generate Python Wheel package from Simulink model to enhance your Software-in-Loop (SiL) tests development workflow!
-Please refer to [Wiki](https://github.com/swag-engineering/simbind-cli/wiki/Motivation)
+Generate Python Wheel package from Simulink model to enhance
+your [Software-in-Loop](https://de.wikipedia.org/wiki/Software_in_the_Loop) tests development workflow!
+Please refer to [Wiki](https://github.com/swag-engineering/simbind-cli/wiki)
 and [Examples](https://github.com/swag-engineering/simbind-cli/tree/master/examples) to explore the project's
-capabilities and limitations.
+capabilities and limitations.  
+You also might be interested into [pytest-simbind](https://github.com/swag-engineering/pytest-simbind) plugin that
+allows to test Simbind models with pytest!
 
 ![Single Loop Feedback](https://raw.githubusercontent.com/swag-engineering/simbind-cli/master/examples/SingleLoopFeedback/SingleLoopFeedback.png)
 
 ## Requirements
 
 We highly recommend to use [Dockerized](https://github.com/swag-engineering/simbind-cli#Docker-Usage) version of
-Simbind,
-since collecting the correct versions of the necessary requirements can be challenging. If you opt for local
+Simbind, since collecting the correct versions of the necessary requirements can be challenging. If you opt for local
 installation, the following is required:
 
 - Linux x86-64 machine with installed Matlab R2023b.
@@ -34,6 +36,7 @@ To install from PyPi run
 ```bash
 $ pip install simbind 
 ```
+Please, notice that you will need to satisfy [requirements](#requirements) before running pip! 
 
 To clone project you will also need to pull submodules with:
 
