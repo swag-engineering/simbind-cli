@@ -45,5 +45,5 @@ async def test_valid_package_names(mocker, random_file):
         mock_assemble.assert_called_once_with(
             random_file,
             name,
-            *[pytest.any] * 6
+            *[pytest.any] * 9
         )

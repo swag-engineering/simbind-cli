@@ -18,7 +18,7 @@ async def test_exporter_dir_transmission(assemble_func_mock, random_file, random
         random_file,
         pytest.any,
         random_empty_dir,
-        *[pytest.any] * 5
+        *[pytest.any] * 8
     )
 
 

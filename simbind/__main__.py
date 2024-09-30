@@ -41,16 +41,21 @@ async def assemble(
         wheel_out_dir: str,
         solver: str,
         time_step: float,
-        license_text: str
+        license_text: str,
+        matlab_paths: list[str],
+        use_ansi_c: bool,
+        preprocessor_defs: list[str]
 ):
     await asyncio.to_thread(
         export_model,
         slx_path,
         exporter_out_dir,
         time_step,
-        FixedStepSolver(solver)
+        FixedStepSolver(solver),
+        matlab_paths,
+        use_ansi_c
     )
-    collector = await Collector.create(exporter_out_dir, package_name, time_step)
+    collector = await Collector.create(exporter_out_dir, package_name, time_step, preprocessor_defs)
 
     mock_dir = os.path.join(models_out_dir, "mock")
     os.mkdir(mock_dir)
@@ -121,7 +126,7 @@ async def async_main():
         dest='slx_path',
         help='Path to Simulink .slx file.',
         required=True,
-        type=os.path.abspath
+        type=lambda x: os.path.abspath(os.path.expanduser(x))
     )
     parser.add_argument(
         '--pkg-name',
@@ -135,7 +140,7 @@ async def async_main():
         dest='wheel_out_dir',
         help='Path to folder where wheel package will be stored. (default: \'%(default)s\')',
         default='.',
-        type=os.path.abspath
+        type=lambda x: os.path.abspath(os.path.expanduser(x))
     )
     parser.add_argument(
         '--solver',
@@ -160,6 +165,29 @@ async def async_main():
         default=""
     )
     parser.add_argument(
+        '--matlab-include',
+        dest='matlab_paths',
+        default=[],
+        help='Path to the folder that will be included into Matlab path. Can be used multiple times.' +
+             'Example: --matlab-include /some/path --matlab-include /another/path',
+        action='append',
+        type=lambda x: os.path.abspath(os.path.expanduser(x))
+    )
+    parser.add_argument(
+        '--use-ansi-c',
+        dest='use_ansi_c',
+        help='During build Matlab/Simulink will use C89/90 (ANSI) instead of C99',
+        action='store_true'
+    )
+    parser.add_argument(
+        '--preprocessor-def',
+        dest='preprocessor_defs',
+        default=[],
+        help='Predefine name as a macro that will be passed to preprocessor. Can be used multiple times.' +
+             'Example: --preprocessor-def "__attribute__(x)=" --preprocessor-def "DEBUG=1"',
+        action='append'
+    )
+    parser.add_argument(
         '-v',
         dest='verbosity',
         default=0,
@@ -171,14 +199,14 @@ async def async_main():
         '--exporter-out-dir',
         dest='exporter_out_dir',
         help=argparse.SUPPRESS,
-        type=os.path.abspath
+        type=lambda x: os.path.abspath(os.path.expanduser(x))
     )
     # [DEBUG] Directory where output Python model will be stored
     parser.add_argument(
         '--models-out-dir',
         dest='models_out_dir',
         help=argparse.SUPPRESS,
-        type=os.path.abspath
+        type=lambda x: os.path.abspath(os.path.expanduser(x))
     )
     # [DEBUG] Flag to delete models-out-dir and exporter-out-dir folders' content if they are not empty
     parser.add_argument(
@@ -217,8 +245,12 @@ async def async_main():
         raise ValueError(
             f"Invalid package name '{args.pkg_name}'."
             "Only lowercase letters, numbers and underscores are acceptable. Should start with lowercase letter and "
-            "have length between 5 and 50 characters."
+            "have length between 5 and 30 characters."
         )
+
+    for simulink_include_dir in args.matlab_paths:
+        if not os.path.isdir(simulink_include_dir):
+            raise FileNotFoundError(f"Matlab include directory '{simulink_include_dir}' does not exist.")
 
     try:
         if args.exporter_out_dir:
@@ -239,7 +271,10 @@ async def async_main():
             args.wheel_out_dir,
             args.solver,
             args.step_size,
-            args.license_text
+            args.license_text,
+            args.matlab_paths,
+            args.use_ansi_c,
+            args.preprocessor_defs
         )
     finally:
         if exporter_out_tmp_dir:

@@ -37,5 +37,5 @@ async def test_slx_path_transmission(assemble_func_mock, random_file):
     await async_main()
     assemble_func_mock.assert_called_once_with(
         random_file,
-        *[pytest.any] * 7
+        *[pytest.any] * 10
     )

@@ -14,7 +14,7 @@ async def test_default_license(assemble_func_mock, random_file):
     await async_main()
     assemble_func_mock.assert_called_once_with(
         random_file,
-        *[pytest.any] * 6,
+        *[pytest.any] * 9,
         ""
     )
 
@@ -32,5 +32,6 @@ async def test_default_license(assemble_func_mock, random_file):
     assemble_func_mock.assert_called_once_with(
         random_file,
         *[pytest.any] * 6,
-        license_text
+        license_text,
+        *[pytest.any] * 3,
     )

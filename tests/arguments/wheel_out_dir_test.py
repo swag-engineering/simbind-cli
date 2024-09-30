@@ -17,5 +17,5 @@ async def test_wheel_dir_transmission(assemble_func_mock, random_file, random_em
         random_file,
         *[pytest.any] * 3,
         random_empty_dir,
-        *[pytest.any] * 3
+        *[pytest.any] * 6
     )
