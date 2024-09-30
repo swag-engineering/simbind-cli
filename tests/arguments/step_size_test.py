@@ -37,5 +37,6 @@ async def test_valid_step_size(mocker, random_file):
             random_file,
             *[pytest.any] * 5,
             step_size,
-            pytest.any
+            pytest.any,
+            *[pytest.any] * 3
         )

@@ -26,8 +26,9 @@ installation, the following is required:
   sudo apt-get install python3-pip build-essential cmake swig
   ```
 
-To run output model you need only Linux x86-64 machine and Python 3.8+. We're open to extending support to Linux ARM and
-Windows x86-64 if there's sufficient interest!
+To run output model you need Python 3.8+; Mock model can be used under any OS, SiL model requires Linux x86-64 machine.
+To learn more about Mock and SiL packages structure and usage, refer
+to [Wiki](https://github.com/swag-engineering/simbind-cli/wiki/Python-Package-Structure).
 
 ## Installation
 
@@ -36,7 +37,8 @@ To install from PyPi run
 ```bash
 $ pip install simbind 
 ```
-Please, notice that you will need to satisfy [requirements](#requirements) before running pip! 
+
+Please, notice that you will need to satisfy [requirements](#requirements) before running pip!
 
 To clone project you will also need to pull submodules with:
 
@@ -55,7 +57,8 @@ subprojects.
 $ simbind --help
 usage: simbind [-h] --slx-path SLX_PATH [--pkg-name PKG_NAME] [--wheel-out-dir WHEEL_OUT_DIR]
                [--solver {ode1,ode2,ode3,ode4,ode5,ode8,ode14x,ode1be}] [--step STEP_SIZE]
-               [--license-text LICENSE_TEXT] [-v]
+               [--license-text LICENSE_TEXT] [--matlab-include SIMULINK_PATHS] [--use-ansi-c]
+               [--preprocessor-def PREPROCESSOR_DEFS] [-v]
 
 Tool to generate Python wheel package from Simulink model.
 
@@ -70,7 +73,15 @@ options:
   --step STEP_SIZE      Fixed step size in seconds. (default: '0.001')
   --license-text LICENSE_TEXT
                         License text that will be included in output Python wheel package. (default: '')
+  --matlab-include MATLAB_PATH
+                        Path to the folder that will be included into Matlab path. Can be used multiple
+                        times.Example: --matlab-include /some/path --matlab-include /another/path
+  --use-ansi-c          During build Matlab/Simulink will use C89/90 (ANSI) instead of C99
+  --preprocessor-def PREPROCESSOR_DEF
+                        Predefine name as a macro that will be passed to preprocessor. Can be used multiple
+                        times.Example: --preprocessor-def "__attribute__(x)=" --preprocessor-def "DEBUG=1"
   -v                    Specifies the level of verbosity. Example: -vvv
+
 ```
 
 For detailed instructions on the structure of the output Python package, please refer to

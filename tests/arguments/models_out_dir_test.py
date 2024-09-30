@@ -19,7 +19,7 @@ async def test_models_dir_transmission(assemble_func_mock, random_file, random_e
         pytest.any,
         pytest.any,
         random_empty_dir,
-        *[pytest.any] * 4
+        *[pytest.any] * 7
     )
 
 

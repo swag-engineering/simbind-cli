@@ -42,6 +42,11 @@ def random_dir_with_files() -> str:
         yield temp_dir
 
 
+@pytest.fixture(scope="function")
+def random_string() -> str:
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+
+
 @pytest.fixture(scope="function", autouse=True)
 def secure_argv():
     original_argv = sys.argv

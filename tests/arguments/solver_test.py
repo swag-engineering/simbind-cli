@@ -36,5 +36,5 @@ async def test_exporter_dir_without_overwrite(mocker, random_file):
             random_file,
             *[pytest.any] * 4,
             solver,
-            *[pytest.any] * 2
+            *[pytest.any] * 5
         )
